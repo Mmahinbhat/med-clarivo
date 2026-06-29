@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedClarivo Elite | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          // MedClarivo brand palette
+          "navy":         "#0C1B2E",
+          "navy-light":   "#142338",
+          "navy-mid":     "#1E3250",
+          "teal":         "#0D9488",
+          "teal-light":   "#14B8A8",
+          "teal-dim":     "#0F766E",
+          "teal-soft":    "rgba(13,148,136,0.12)",
+          "gold":         "#F59E0B",
+          "gold-soft":    "rgba(245,158,11,0.12)",
+          // Surfaces
+          "surface":      "#F7F9FC",
+          "surface-card": "#FFFFFF",
+          "surface-dim":  "#E8EFF8",
+          // Text
+          "ink":          "#0C1B2E",
+          "ink-muted":    "#4A5568",
+          "ink-faint":    "#718096",
+          // Semantic
+          "success":      "#059669",
+          "success-soft": "rgba(5,150,105,0.10)",
+          "warn":         "#D97706",
+          "warn-soft":    "rgba(217,119,6,0.10)",
+          "danger":       "#DC2626",
+          "danger-soft":  "rgba(220,38,38,0.10)",
+          "purple":       "#7C3AED",
+          "purple-soft":  "rgba(124,58,237,0.10)",
+        },
+        fontFamily: {
+          serif:  ["DM Serif Display", "serif"],
+          sans:   ["DM Sans", "sans-serif"],
+        },
+        borderRadius: {
+          "sm":   "0.375rem",
+          "DEFAULT": "0.5rem",
+          "md":   "0.75rem",
+          "lg":   "1rem",
+          "xl":   "1.25rem",
+          "2xl":  "1.5rem",
+          "3xl":  "2rem",
+          "full": "9999px",
+        },
+      }
+    }
+  }
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: #F7F9FC;
+    color: #0C1B2E;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+  .font-serif { font-family: 'DM Serif Display', serif; }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 240px; background: #0C1B2E;
+    display: flex; flex-direction: column;
+    z-index: 50; transition: transform 0.3s ease;
+  }
+  @media (max-width: 1023px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+  }
+  .main-content { margin-left: 240px; }
+  @media (max-width: 1023px) { .main-content { margin-left: 0; } }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(226,232,240,0.8);
+  }
+
+  /* Nav item */
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px; border-radius: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: all 0.18s ease;
+    margin: 2px 12px; text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active {
+    background: rgba(13,148,136,0.2);
+    color: #5EEAD4;
+    border: 1px solid rgba(13,148,136,0.3);
+  }
+  .nav-item.active .nav-icon { color: #5EEAD4; }
+  .nav-icon { font-size: 20px; }
+
+  /* Cards */
+  .card {
+    background: white;
+    border: 1px solid rgba(203,213,225,0.5);
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 12px rgba(12,27,46,0.05);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: 0 8px 28px rgba(12,27,46,0.09); transform: translateY(-1px); }
+
+  /* Stat ring */
+  .ring-track { stroke: rgba(203,213,225,0.35); }
+
+  /* Progress bar */
+  .progress-track { background: rgba(13,148,136,0.12); border-radius: 9999px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #0D9488, #14B8A8); border-radius: 9999px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+
+  /* Teal button */
+  .btn-primary {
+    background: linear-gradient(135deg, #0D9488, #0F766E);
+    color: white; border: none; border-radius: 0.75rem;
+    font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(13,148,136,0.3);
+    transition: all 0.18s ease;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(13,148,136,0.4); }
+  .btn-primary:active { transform: scale(0.97); }
+
+  /* Outline button */
+  .btn-outline {
+    background: transparent; border: 1.5px solid #0D9488;
+    color: #0D9488; border-radius: 0.75rem;
+    font-weight: 600; cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .btn-outline:hover { background: rgba(13,148,136,0.07); }
+
+  /* Badge */
+  .badge-teal { background: rgba(13,148,136,0.12); color: #0D9488; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .badge-gold { background: rgba(245,158,11,0.12); color: #B45309; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .badge-purple { background: rgba(124,58,237,0.10); color: #7C3AED; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .badge-danger { background: rgba(220,38,38,0.10); color: #DC2626; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+  .badge-navy { background: rgba(12,27,46,0.08); color: #0C1B2E; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; }
+
+  /* Scrollbar hide */
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Material icons */
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* Overlay */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; display: none; }
+  .overlay.open { display: block; }
+
+  /* Mentor card avatar ring */
+  .avatar-ring { border: 2.5px solid #0D9488; padding: 2px; border-radius: 9999px; }
+
+  /* Countdown units */
+  .countdown-unit {
+    background: rgba(255,255,255,0.08); border-radius: 0.75rem;
+    padding: 8px 12px; text-align: center; min-width: 52px;
+  }
+
+  /* Animated gradient hero */
+  .hero-gradient {
+    background: linear-gradient(135deg, #0C1B2E 0%, #1E3250 50%, #0D4545 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero-gradient::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(13,148,136,0.25) 0%, transparent 60%);
+  }
+
+  /* Task check states */
+  .task-done .task-label { text-decoration: line-through; opacity: 0.5; }
+  .task-check-done { background: #0D9488; border-color: #0D9488; }
+
+  /* Pulse dot */
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+  /* Tooltip */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+    background: #0C1B2E; color: white; font-size: 11px; white-space: nowrap;
+    padding: 4px 8px; border-radius: 6px; pointer-events: none; z-index: 99;
+  }
+
+  /* Smooth tab transitions */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Mobile overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <!-- Brand -->
+  <div class="px-5 py-5 border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-teal flex items-center justify-center shadow-lg">
+        <span class="material-symbols-outlined text-white text-[18px]" style="font-variation-settings:'FILL' 1">medical_services</span>
+      </div>
+      <div>
+        <span class="font-serif text-white text-lg leading-none tracking-tight">MedClarivo</span>
+        <span class="block text-[10px] text-teal-light font-bold tracking-widest uppercase mt-0.5">Elite</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- User pill -->
+  <div class="mx-4 mt-4 mb-2 p-3 rounded-xl bg-white/5 flex items-center gap-3">
+    <div class="avatar-ring flex-shrink-0">
+      <div class="w-8 h-8 rounded-full bg-teal flex items-center justify-center text-white font-bold text-sm">M</div>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-white font-semibold text-sm truncate">Mahin Bhat</p>
+      <p class="text-white/40 text-[11px] truncate">NEET UG • Final Year</p>
+    </div>
+    <span class="material-symbols-outlined text-white/30 text-[18px]">expand_more</span>
+  </div>
+
+  <!-- Nav sections -->
+  <nav class="flex-1 overflow-y-auto py-2 hide-scrollbar">
+    <p class="px-6 py-2 text-[10px] text-white/30 uppercase tracking-widest font-bold">Main</p>
+    <a href="#" class="nav-item active" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon" style="font-variation-settings:'FILL' 1">dashboard</span>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">menu_book</span>
+      Study Plan
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">quiz</span>
+      Practice Tests
+      <span class="ml-auto bg-teal/20 text-teal-light text-[10px] font-bold px-2 py-0.5 rounded-full">3 new</span>
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">monitoring</span>
+      Analytics
+    </a>
+
+    <p class="px-6 py-2 mt-3 text-[10px] text-white/30 uppercase tracking-widest font-bold">Mentorship</p>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">people</span>
+      My Mentor
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">video_call</span>
+      Sessions
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">forum</span>
+      Doubt Forum
+      <span class="ml-auto w-2 h-2 bg-teal rounded-full pulse-dot"></span>
+    </a>
+
+    <p class="px-6 py-2 mt-3 text-[10px] text-white/30 uppercase tracking-widest font-bold">Account</p>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">emoji_events</span>
+      Achievements
+    </a>
+    <a href="#" class="nav-item" onclick="setNav(this)">
+      <span class="material-symbols-outlined nav-icon">settings</span>
+      Settings
+    </a>
+  </nav>
+
+  <!-- Upgrade prompt -->
+  <div class="m-4 p-4 rounded-2xl" style="background:linear-gradient(135deg,rgba(13,148,136,0.25),rgba(13,148,136,0.08));border:1px solid rgba(13,148,136,0.3)">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="material-symbols-outlined text-teal-light text-[18px]" style="font-variation-settings:'FILL' 1">workspace_premium</span>
+      <span class="text-white font-bold text-sm">Elite Access</span>
+    </div>
+    <p class="text-white/50 text-[11px] leading-snug mb-3">Free early access active. Upgrade for 1:1 unlimited sessions.</p>
+    <button class="w-full py-2 rounded-xl text-xs font-bold btn-primary">Upgrade Plan</button>
+  </div>
+
+  <!-- Logout -->
+  <a href="index.html" class="nav-item mb-4 text-red-400 hover:text-red-300 hover:bg-red-500/10">
+    <span class="material-symbols-outlined nav-icon">logout</span>
+    Sign Out
+  </a>
+</aside>
+
+<!-- ═══════════════════════════════ TOPBAR ═══════════════════════════════ -->
+<header class="main-content fixed top-0 right-0 left-0 lg:left-[240px] z-30 h-14 flex items-center justify-between px-4 md:px-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+  <!-- Mobile hamburger -->
+  <button class="lg:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors" onclick="openSidebar()">
+    <span class="material-symbols-outlined text-ink">menu</span>
+  </button>
+
+  <!-- Search bar -->
+  <div class="hidden md:flex flex-1 max-w-sm mx-4">
+    <div class="relative w-full">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-[18px]">search</span>
+      <input type="text" placeholder="Search topics, tests, doubts…"
+        class="w-full pl-9 pr-4 py-2 rounded-xl bg-surface border border-slate-200 text-sm text-ink placeholder-ink-faint focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all"/>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <!-- Streak chip -->
+    <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-100">
+      <span class="material-symbols-outlined text-orange-500 text-[16px]" style="font-variation-settings:'FILL' 1">local_fire_department</span>
+      <span class="text-orange-600 font-bold text-sm">24</span>
+    </div>
+    <!-- Notif -->
+    <button class="relative p-2 rounded-xl hover:bg-slate-100 transition-colors" data-tip="Notifications">
+      <span class="material-symbols-outlined text-ink-muted">notifications</span>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full border-2 border-white"></span>
+    </button>
+    <!-- Avatar -->
+    <div class="avatar-ring cursor-pointer">
+      <div class="w-8 h-8 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm">M</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
+<main class="main-content pt-14 min-h-screen">
+
+  <!-- ── HERO WELCOME BANNER ── -->
+  <section class="hero-gradient px-6 md:px-10 py-8 md:py-10">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="badge-teal" style="background:rgba(13,148,136,0.2);color:#5EEAD4">
+            <span class="material-symbols-outlined text-[13px] mr-1" style="font-variation-settings:'FILL' 1;vertical-align:middle">workspace_premium</span>
+            Verified Elite
+          </span>
+          <span class="text-white/40 text-xs">•</span>
+          <span class="text-white/50 text-xs">AIIMS Delhi Target</span>
+        </div>
+        <h1 class="font-serif text-white text-3xl md:text-4xl leading-tight">Good morning, Mahin 👋</h1>
+        <p class="text-white/55 mt-1.5 text-sm md:text-base max-w-md">Consistency is the bridge between goals and accomplishment. You're on a <span class="text-teal-light font-bold">24-day streak</span> — don't break it.</p>
+      </div>
+
+      <!-- Countdown to NEET -->
+      <div class="relative z-10 flex-shrink-0">
+        <p class="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-2 text-center md:text-right">NEET UG Countdown</p>
+        <div class="flex items-center gap-2">
+          <div class="countdown-unit">
+            <div class="text-white font-serif text-2xl leading-none" id="cd-days">142</div>
+            <div class="text-white/40 text-[9px] uppercase tracking-wider mt-1">Days</div>
+          </div>
+          <span class="text-white/30 text-xl font-bold">:</span>
+          <div class="countdown-unit">
+            <div class="text-white font-serif text-2xl leading-none" id="cd-hours">08</div>
+            <div class="text-white/40 text-[9px] uppercase tracking-wider mt-1">Hrs</div>
+          </div>
+          <span class="text-white/30 text-xl font-bold">:</span>
+          <div class="countdown-unit">
+            <div class="text-white font-serif text-2xl leading-none" id="cd-mins">34</div>
+            <div class="text-white/40 text-[9px] uppercase tracking-wider mt-1">Min</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-8">
+
+    <!-- ── STAT CARDS ROW ── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Streak -->
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-orange-500" style="font-variation-settings:'FILL' 1">local_fire_department</span>
+        </div>
+        <div>
+          <p class="text-ink-faint text-[11px] uppercase tracking-wider font-semibold">Streak</p>
+          <p class="font-serif text-2xl text-ink leading-tight">24 <span class="text-sm font-sans font-normal text-ink-muted">days</span></p>
+        </div>
+      </div>
+      <!-- Hours -->
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-teal-soft flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-teal">timer</span>
+        </div>
+        <div>
+          <p class="text-ink-faint text-[11px] uppercase tracking-wider font-semibold">Today</p>
+          <p class="font-serif text-2xl text-ink leading-tight">6.5 <span class="text-sm font-sans font-normal text-ink-muted">hrs</span></p>
+        </div>
+      </div>
+      <!-- Accuracy -->
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-purple-soft flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-purple">monitoring</span>
+        </div>
+        <div>
+          <p class="text-ink-faint text-[11px] uppercase tracking-wider font-semibold">Accuracy</p>
+          <p class="font-serif text-2xl text-ink leading-tight">88 <span class="text-sm font-sans font-normal text-ink-muted">%</span></p>
+        </div>
+      </div>
+      <!-- Target -->
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-gold-soft flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-gold">target</span>
+        </div>
+        <div>
+          <p class="text-ink-faint text-[11px] uppercase tracking-wider font-semibold">Target</p>
+          <p class="font-serif text-2xl text-ink leading-tight">710 <span class="text-sm font-sans font-normal text-ink-muted">/ 720</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN GRID ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT COL (8) -->
+      <div class="lg:col-span-8 space-y-8">
+
+        <!-- TODAY'S STUDY PLAN -->
+        <section class="card p-6 md:p-8">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-serif text-xl text-ink">Today's Study Plan</h2>
+            <button class="text-teal text-sm font-semibold hover:underline">View full schedule →</button>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="mb-6">
+            <div class="flex justify-between text-xs text-ink-faint mb-1.5">
+              <span>2 of 4 tasks complete</span>
+              <span class="text-teal font-bold">50%</span>
+            </div>
+            <div class="progress-track h-2">
+              <div class="progress-fill h-2" style="width:50%"></div>
+            </div>
+          </div>
+
+          <div class="space-y-3" id="tasks-list">
+            <!-- Task 1 — done -->
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-surface border border-transparent hover:border-slate-200 transition-all task-done" data-done="true">
+              <button class="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 task-check-done" onclick="toggleTask(this)">
+                <span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:'FILL' 1">check</span>
+              </button>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-green-50 text-green-700 text-[10px] font-bold uppercase">Biology</span>
+                  <span class="text-ink font-semibold text-sm task-label">Revision: Plant Kingdom</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1 text-xs text-ink-faint">
+                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">schedule</span>45 min</span>
+                  <span class="badge-danger" style="padding:1px 7px">High Priority</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 2 — in progress -->
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-surface border border-teal/30 hover:border-teal/50 transition-all" data-done="false">
+              <button class="w-6 h-6 rounded-full border-2 border-teal flex items-center justify-center flex-shrink-0" onclick="toggleTask(this)" style="background:transparent">
+                <span class="material-symbols-outlined text-teal text-[13px] pulse-dot">hourglass_top</span>
+              </button>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold uppercase">Chemistry</span>
+                  <span class="text-ink font-semibold text-sm task-label">Organic Chemistry: Practice Set 4</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1 text-xs text-ink-faint">
+                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">schedule</span>1.5 hrs</span>
+                  <span class="badge-gold" style="padding:1px 7px">Medium Priority</span>
+                  <span class="text-teal font-semibold">In Progress</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 3 -->
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-surface border border-transparent hover:border-slate-200 transition-all" data-done="false">
+              <button class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center flex-shrink-0" onclick="toggleTask(this)" style="background:transparent"></button>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold uppercase">Physics</span>
+                  <span class="text-ink font-semibold text-sm task-label">Full Syllabus Mock Test #12</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1 text-xs text-ink-faint">
+                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">schedule</span>3 hrs</span>
+                  <span class="badge-danger" style="padding:1px 7px">High Priority</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 4 -->
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-surface border border-transparent hover:border-slate-200 transition-all" data-done="false">
+              <button class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center flex-shrink-0" onclick="toggleTask(this)" style="background:transparent"></button>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 text-[10px] font-bold uppercase">Revision</span>
+                  <span class="text-ink font-semibold text-sm task-label">Anatomy Flashcard Deck — Nervous System</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1 text-xs text-ink-faint">
+                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">schedule</span>30 min</span>
+                  <span class="badge-teal" style="padding:1px 7px">Low Priority</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary w-full mt-6 py-4 text-base font-bold tracking-wide">
+            Continue Studying
+          </button>
+        </section>
+
+        <!-- SUBJECT MASTERY -->
+        <section>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-serif text-xl text-ink">Subject Mastery</h2>
+            <span class="text-ink-faint text-xs">Based on last 30 days</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+            <!-- Physics -->
+            <div class="card p-6 relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-20 h-20 rounded-full -mr-6 -mt-6 bg-blue-50 group-hover:scale-110 transition-transform"></div>
+              <p class="text-xs font-bold text-navy uppercase tracking-wider mb-4">Physics</p>
+              <div class="flex items-center gap-4">
+                <div class="relative w-16 h-16 flex-shrink-0">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                    <circle class="ring-track" cx="32" cy="32" r="28" fill="transparent" stroke-width="6"/>
+                    <circle cx="32" cy="32" r="28" fill="transparent" stroke="#0D9488" stroke-width="6"
+                      stroke-dasharray="175.9" stroke-dashoffset="44" stroke-linecap="round"/>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-ink">75%</span>
+                </div>
+                <div>
+                  <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
+                  <p class="font-serif text-2xl text-ink">155</p>
+                  <p class="text-[10px] text-ink-faint">of 180</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-[10px] text-ink-faint mb-1"><span>Weak: Optics</span></div>
+                <div class="progress-track h-1.5"><div class="progress-fill h-1.5" style="width:75%"></div></div>
+              </div>
+            </div>
+
+            <!-- Chemistry -->
+            <div class="card p-6 relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-20 h-20 rounded-full -mr-6 -mt-6 bg-teal-50"></div>
+              <p class="text-xs font-bold text-teal uppercase tracking-wider mb-4">Chemistry</p>
+              <div class="flex items-center gap-4">
+                <div class="relative w-16 h-16 flex-shrink-0">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                    <circle class="ring-track" cx="32" cy="32" r="28" fill="transparent" stroke-width="6"/>
+                    <circle cx="32" cy="32" r="28" fill="transparent" stroke="#0D9488" stroke-width="6"
+                      stroke-dasharray="175.9" stroke-dashoffset="21" stroke-linecap="round"/>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-ink">88%</span>
+                </div>
+                <div>
+                  <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
+                  <p class="font-serif text-2xl text-ink">172</p>
+                  <p class="text-[10px] text-ink-faint">of 180</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-[10px] text-ink-faint mb-1"><span>Weak: Coordination</span></div>
+                <div class="progress-track h-1.5"><div class="progress-fill h-1.5" style="width:88%"></div></div>
+              </div>
+            </div>
+
+            <!-- Biology -->
+            <div class="card p-6 relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-20 h-20 rounded-full -mr-6 -mt-6 bg-purple-50"></div>
+              <p class="text-xs font-bold text-purple uppercase tracking-wider mb-4">Biology</p>
+              <div class="flex items-center gap-4">
+                <div class="relative w-16 h-16 flex-shrink-0">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                    <circle class="ring-track" cx="32" cy="32" r="28" fill="transparent" stroke-width="6"/>
+                    <circle cx="32" cy="32" r="28" fill="transparent" stroke="#7C3AED" stroke-width="6"
+                      stroke-dasharray="175.9" stroke-dashoffset="10" stroke-linecap="round"/>
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-ink">94%</span>
+                </div>
+                <div>
+                  <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
+                  <p class="font-serif text-2xl text-ink">345</p>
+                  <p class="text-[10px] text-ink-faint">of 360</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-[10px] text-ink-faint mb-1"><span>Weak: Genetics</span></div>
+                <div class="progress-track h-1.5"><div class="progress-fill h-1.5" style="width:94%;background:linear-gradient(90deg,#7C3AED,#A78BFA)"></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUICK ACTIONS -->
+        <section>
+          <h2 class="font-serif text-xl text-ink mb-4">Quick Actions</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button class="card p-4 flex flex-col items-center gap-2 text-center hover:border-teal/40 transition-all group">
+              <div class="w-10 h-10 rounded-xl bg-teal-soft flex items-center justify-center group-hover:bg-teal/20 transition-colors">
+                <span class="material-symbols-outlined text-teal">quiz</span>
+              </div>
+              <span class="text-ink text-xs font-semibold">Take Mock Test</span>
+            </button>
+            <button class="card p-4 flex flex-col items-center gap-2 text-center hover:border-purple/40 transition-all group">
+              <div class="w-10 h-10 rounded-xl bg-purple-soft flex items-center justify-center group-hover:bg-purple/20 transition-colors">
+                <span class="material-symbols-outlined text-purple">style</span>
+              </div>
+              <span class="text-ink text-xs font-semibold">Flashcards</span>
+            </button>
+            <button class="card p-4 flex flex-col items-center gap-2 text-center hover:border-gold/40 transition-all group">
+              <div class="w-10 h-10 rounded-xl bg-gold-soft flex items-center justify-center group-hover:bg-gold/20 transition-colors">
+                <span class="material-symbols-outlined text-gold">forum</span>
+              </div>
+              <span class="text-ink text-xs font-semibold">Ask a Doubt</span>
+            </button>
+            <button class="card p-4 flex flex-col items-center gap-2 text-center hover:border-navy/20 transition-all group">
+              <div class="w-10 h-10 rounded-xl bg-surface-dim flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                <span class="material-symbols-outlined text-navy">video_call</span>
+              </div>
+              <span class="text-ink text-xs font-semibold">Book Session</span>
+            </button>
+          </div>
+        </section>
+
+      </div><!-- /LEFT COL -->
+
+      <!-- RIGHT SIDEBAR (4) -->
+      <aside class="lg:col-span-4 space-y-6">
+
+        <!-- WEEKLY GOAL -->
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-serif text-lg text-ink">Weekly Goal</h3>
+            <span class="text-teal font-bold text-sm">67.5%</span>
+          </div>
+          <div class="flex justify-between items-end mb-2">
+            <span class="font-bold text-ink">27h <span class="text-ink-faint font-normal text-sm">/ 40h</span></span>
+            <span class="text-ink-faint text-xs">13h remaining</span>
+          </div>
+          <div class="progress-track h-3 mb-4">
+            <div class="progress-fill h-3" style="width:67.5%"></div>
+          </div>
+          <div class="grid grid-cols-7 gap-1 mt-4">
+            <!-- Day bars -->
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-teal/60 rounded-md" style="height:85%"></div>
+              </div>
+              <span class="text-[9px] text-ink-faint font-semibold">M</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-teal/60 rounded-md" style="height:70%"></div>
+              </div>
+              <span class="text-[9px] text-ink-faint font-semibold">T</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-teal/60 rounded-md" style="height:95%"></div>
+              </div>
+              <span class="text-[9px] text-ink-faint font-semibold">W</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-teal/60 rounded-md" style="height:60%"></div>
+              </div>
+              <span class="text-[9px] text-ink-faint font-semibold">T</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-teal rounded-md" style="height:50%"></div>
+              </div>
+              <span class="text-[9px] text-teal font-bold">F</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden"></div>
+              <span class="text-[9px] text-ink-faint font-semibold">S</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-full h-16 bg-surface-dim rounded-md relative overflow-hidden"></div>
+              <span class="text-[9px] text-ink-faint font-semibold">S</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MENTOR CARD -->
+        <div class="card p-6" style="border-top:3px solid #0D9488">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-serif text-lg text-ink">My Mentor</h3>
+            <span class="flex items-center gap-1 text-success text-xs font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-success pulse-dot"></span>Available
+            </span>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="avatar-ring flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-serif text-lg">A</div>
+            </div>
+            <div>
+              <p class="text-ink font-bold">Dr. Arjun Mehta</p>
+              <p class="text-ink-faint text-xs">AIIMS Delhi, 2019 • AIR 7</p>
+              <div class="flex items-center gap-1 mt-0.5">
+                <span class="material-symbols-outlined text-gold text-[13px]" style="font-variation-settings:'FILL' 1">star</span>
+                <span class="text-xs font-bold text-ink">4.9</span>
+                <span class="text-ink-faint text-xs">(142 sessions)</span>
+              </div>
+            </div>
+          </div>
+          <!-- Next session -->
+          <div class="p-3 rounded-xl bg-teal-soft border border-teal/20 mb-4">
+            <p class="text-teal text-xs font-bold mb-0.5">Next Session</p>
+            <p class="text-ink font-semibold text-sm">Oct 24 • 4:00 PM</p>
+            <p class="text-ink-faint text-xs">Organic Chemistry Strategy</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-primary flex-1 py-2.5 text-sm font-bold flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">video_call</span>Join
+            </button>
+            <button class="btn-outline flex-1 py-2.5 text-sm font-bold flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">chat</span>Message
+            </button>
+          </div>
+        </div>
+
+        <!-- UPCOMING EVENTS -->
+        <div class="card p-6">
+          <h3 class="font-serif text-lg text-ink mb-4">Upcoming</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-colors">
+              <div class="w-11 h-11 rounded-xl bg-navy flex flex-col items-center justify-center flex-shrink-0 leading-none">
+                <span class="text-teal-light text-[9px] font-bold uppercase">Oct</span>
+                <span class="text-white font-serif text-lg">24</span>
+              </div>
+              <div>
+                <p class="text-ink font-semibold text-sm">1:1 Mentor Session</p>
+                <p class="text-ink-faint text-xs">4:00 PM • Dr. A. Mehta</p>
+              </div>
+              <span class="ml-auto badge-teal">Today</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-colors">
+              <div class="w-11 h-11 rounded-xl bg-surface-dim flex flex-col items-center justify-center flex-shrink-0 leading-none">
+                <span class="text-ink-faint text-[9px] font-bold uppercase">Oct</span>
+                <span class="text-ink font-serif text-lg">27</span>
+              </div>
+              <div>
+                <p class="text-ink font-semibold text-sm">Mock Test #13</p>
+                <p class="text-ink-faint text-xs">9:00 AM • NEET Pattern</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-colors">
+              <div class="w-11 h-11 rounded-xl bg-surface-dim flex flex-col items-center justify-center flex-shrink-0 leading-none">
+                <span class="text-ink-faint text-[9px] font-bold uppercase">Nov</span>
+                <span class="text-ink font-serif text-lg">02</span>
+              </div>
+              <div>
+                <p class="text-ink font-semibold text-sm">Group Doubt Session</p>
+                <p class="text-ink-faint text-xs">6:00 PM • All AIIMS aspirants</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div class="card p-6">
+          <h3 class="font-serif text-lg text-ink mb-4">Achievements</h3>
+          <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
+            <div class="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]">
+              <div class="w-14 h-14 rounded-full bg-orange-50 border-2 border-orange-200 flex items-center justify-center">
+                <span class="material-symbols-outlined text-orange-500 text-2xl" style="font-variation-settings:'FILL' 1">local_fire_department</span>
+              </div>
+              <span class="text-[10px] font-bold text-center text-ink-muted leading-tight">24-Day Streak</span>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]">
+              <div class="w-14 h-14 rounded-full bg-gold-soft border-2 border-yellow-200 flex items-center justify-center">
+                <span class="material-symbols-outlined text-gold text-2xl" style="font-variation-settings:'FILL' 1">military_tech</span>
+              </div>
+              <span class="text-[10px] font-bold text-center text-ink-muted leading-tight">Top Performer</span>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]">
+              <div class="w-14 h-14 rounded-full bg-success-soft border-2 border-green-200 flex items-center justify-center">
+                <span class="material-symbols-outlined text-success text-2xl" style="font-variation-settings:'FILL' 1">star</span>
+              </div>
+              <span class="text-[10px] font-bold text-center text-ink-muted leading-tight">Bio Expert</span>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]">
+              <div class="w-14 h-14 rounded-full bg-purple-soft border-2 border-purple-200 flex items-center justify-center">
+                <span class="material-symbols-outlined text-purple text-2xl" style="font-variation-settings:'FILL' 1">workspace_premium</span>
+              </div>
+              <span class="text-[10px] font-bold text-center text-ink-muted leading-tight">Elite Member</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOUBT RESOLVER — AI-powered quick feature -->
+        <div class="card p-6 border-l-4 border-teal">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-teal text-[20px]" style="font-variation-settings:'FILL' 1">psychology</span>
+            <h3 class="font-serif text-lg text-ink">Quick Doubt</h3>
+            <span class="badge-teal text-[9px] ml-auto">AI Powered</span>
+          </div>
+          <p class="text-ink-faint text-xs mb-3">Get instant explanations for any concept.</p>
+          <input type="text" id="doubt-input" placeholder="e.g. Explain Krebs cycle…"
+            class="w-full px-3 py-2.5 rounded-xl bg-surface border border-slate-200 text-sm text-ink placeholder-ink-faint focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all mb-2"/>
+          <button onclick="askDoubt()" class="btn-primary w-full py-2.5 text-sm font-bold">Ask Now</button>
+          <div id="doubt-response" class="mt-3 hidden text-xs text-ink-muted bg-surface p-3 rounded-xl leading-relaxed"></div>
+        </div>
+
+      </aside><!-- /RIGHT SIDEBAR -->
+    </div><!-- /MAIN GRID -->
+
+    <!-- DAILY STATS STRIP -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="card p-5 flex items-center gap-3">
+        <span class="material-symbols-outlined text-teal">task_alt</span>
+        <div>
+          <p class="text-ink-faint text-xs">Tasks Done</p>
+          <p class="font-serif text-xl text-ink">2 <span class="text-ink-faint font-sans text-sm">/ 4</span></p>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-3">
+        <span class="material-symbols-outlined text-purple">app_registration</span>
+        <div>
+          <p class="text-ink-faint text-xs">Qs Solved</p>
+          <p class="font-serif text-xl text-ink">124</p>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-3">
+        <span class="material-symbols-outlined text-gold">emoji_events</span>
+        <div>
+          <p class="text-ink-faint text-xs">Rank (Elite)</p>
+          <p class="font-serif text-xl text-ink">#<span>12</span></p>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-3">
+        <span class="material-symbols-outlined text-navy">trending_up</span>
+        <div>
+          <p class="text-ink-faint text-xs">Score Trend</p>
+          <p class="font-serif text-xl text-ink text-success">↑ 4.2%</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /max-w -->
+</main>
+
+<!-- ═══════════════════ MOBILE BOTTOM NAV ═══════════════════ -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 flex items-center justify-around h-16 px-2">
+  <button class="flex flex-col items-center gap-0.5 p-2 text-teal">
+    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 1">dashboard</span>
+    <span class="text-[9px] font-bold">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-0.5 p-2 text-ink-faint">
+    <span class="material-symbols-outlined text-[22px]">menu_book</span>
+    <span class="text-[9px] font-semibold">Study</span>
+  </button>
+  <button class="flex flex-col items-center gap-0.5 p-2 text-ink-faint">
+    <span class="material-symbols-outlined text-[22px]">quiz</span>
+    <span class="text-[9px] font-semibold">Tests</span>
+  </button>
+  <button class="flex flex-col items-center gap-0.5 p-2 text-ink-faint relative">
+    <span class="material-symbols-outlined text-[22px]">people</span>
+    <span class="text-[9px] font-semibold">Mentor</span>
+    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-teal rounded-full"></span>
+  </button>
+  <button class="flex flex-col items-center gap-0.5 p-2 text-ink-faint">
+    <span class="material-symbols-outlined text-[22px]">person</span>
+    <span class="text-[9px] font-semibold">Profile</span>
+  </button>
+</nav>
+
+<script>
+  // ── Sidebar toggle (mobile) ──
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  // ── Active nav ──
+  function setNav(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    closeSidebar();
+  }
+
+  // ── Task toggle ──
+  function toggleTask(btn) {
+    const row = btn.closest('[data-done]');
+    const done = row.getAttribute('data-done') === 'true';
+    row.setAttribute('data-done', done ? 'false' : 'true');
+    if (!done) {
+      row.classList.add('task-done');
+      btn.classList.add('task-check-done');
+      btn.innerHTML = '<span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:\'FILL\' 1">check</span>';
+      btn.style.background = '';
+    } else {
+      row.classList.remove('task-done');
+      btn.classList.remove('task-check-done');
+      btn.innerHTML = '';
+      btn.style.background = 'transparent';
+    }
+    updateTaskProgress();
+  }
+
+  function updateTaskProgress() {
+    const rows = document.querySelectorAll('[data-done]');
+    const done = Array.from(rows).filter(r => r.getAttribute('data-done') === 'true').length;
+    const total = rows.length;
+    const pct = Math.round((done / total) * 100);
+    document.querySelector('#tasks-list').previousElementSibling.querySelector('.progress-fill').style.width = pct + '%';
+    document.querySelector('#tasks-list').previousElementSibling.querySelector('.text-teal').textContent = pct + '%';
+    document.querySelector('#tasks-list').previousElementSibling.querySelector('span:first-child').textContent = `${done} of ${total} tasks complete`;
+  }
+
+  // ── Countdown timer ──
+  function updateCountdown() {
+    // NEET 2025 approx date — May 4, 2025 → use a future placeholder
+    const target = new Date('2025-05-04T09:00:00');
+    const now = new Date();
+    let diff = target - now;
+    if (diff < 0) diff = 0;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('cd-days').textContent = String(d).padStart(3, '0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  // ── AI Quick Doubt (calls Anthropic API) ──
+  async function askDoubt() {
+    const input = document.getElementById('doubt-input');
+    const responseEl = document.getElementById('doubt-response');
+    const q = input.value.trim();
+    if (!q) return;
+
+    responseEl.classList.remove('hidden');
+    responseEl.textContent = 'Thinking…';
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: 'You are MedClarivo Elite, a concise AI tutor for NEET/AIIMS medical entrance aspirants in India. Answer questions about Biology, Chemistry, and Physics with clarity and precision. Keep answers under 120 words. Use plain text only.',
+          messages: [{ role: 'user', content: q }]
+        })
+      });
+      const data = await res.json();
+      responseEl.textContent = data.content?.[0]?.text || 'No response. Please try again.';
+    } catch (e) {
+      responseEl.textContent = 'Could not connect. Please check your connection.';
+    }
+  }
+
+  // Allow Enter key in doubt input
+  document.getElementById('doubt-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') askDoubt();
+  });
+
+  // ── Animate progress bars on load ──
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0%';
+      setTimeout(() => { el.style.width = w; }, 100);
+    });
+  });
+</script>
+</body>
+</html>
