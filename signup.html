@@ -139,29 +139,14 @@
         </div>
       </div>
 
-      <!-- Target Exam -->
+      <!-- Confirm Password -->
       <div class="space-y-2">
-        <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="exam">Target Exam</label>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="confirmPassword">Confirm Password</label>
         <div class="relative group">
-          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint group-focus-within:text-teal transition-colors text-[20px]">school</span>
-          <select class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm appearance-none text-ink" id="exam" name="exam">
-            <option value="" disabled selected>Select your exam</option>
-            <option value="neet-ug">NEET UG</option>
-            <option value="neet-pg">NEET PG</option>
-            <option value="aiims">AIIMS</option>
-            <option value="jipmer">JIPMER</option>
-            <option value="usmle">USMLE</option>
-          </select>
-          <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-ink-faint pointer-events-none text-[20px]">expand_more</span>
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint group-focus-within:text-teal transition-colors text-[20px]">lock</span>
+          <input class="w-full pl-12 pr-12 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" type="password"/>
+          <button class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-ink-faint hover:text-ink transition-colors cursor-pointer bg-none border-none text-[20px]" onclick="toggleConfirm()" type="button">visibility</button>
         </div>
-      </div>
-
-      <!-- Terms -->
-      <div class="flex items-start gap-3 px-1 pt-1">
-        <input class="w-5 h-5 mt-0.5 rounded border-border accent-teal cursor-pointer flex-shrink-0" id="terms" type="checkbox"/>
-        <label class="text-sm text-ink-muted cursor-pointer" for="terms">
-          I agree to the <a href="#" class="text-teal font-semibold hover:underline">Terms of Service</a> and <a href="#" class="text-teal font-semibold hover:underline">Privacy Policy</a>
-        </label>
       </div>
 
       <!-- Submit -->
@@ -271,25 +256,36 @@
     setTimeout(() => ripple.remove(), 600);
   });
 
+  function toggleConfirm() {
+    const input = document.getElementById('confirmPassword');
+    const btn = event.currentTarget;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = 'visibility_off';
+    } else {
+      input.type = 'password';
+      btn.textContent = 'visibility';
+    }
+  }
+
   // Form submit → POST /api/auth/register
   document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name     = document.getElementById('name').value.trim();
-    const email    = document.getElementById('email').value.trim();
-    const phone    = document.getElementById('phone').value.trim();
-    const password = document.getElementById('password').value;
-    const exam     = document.getElementById('exam').value;
-    const terms    = document.getElementById('terms').checked;
+    const name            = document.getElementById('name').value.trim();
+    const email           = document.getElementById('email').value.trim();
+    const phone           = document.getElementById('phone').value.trim();
+    const password        = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       return showToast('Please fill in all required fields.', 'error');
     }
     if (password.length < 8) {
       return showToast('Password must be at least 8 characters.', 'error');
     }
-    if (!terms) {
-      return showToast('Please accept the Terms of Service.', 'error');
+    if (password !== confirmPassword) {
+      return showToast('Passwords do not match.', 'error');
     }
 
     const btn = document.getElementById('submitBtn');
@@ -301,7 +297,7 @@
       const res  = await fetch(`${API_BASE}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password, exam }),
+        body: JSON.stringify({ name, email, phone, password }),
       });
       const data = await res.json();
 
@@ -309,7 +305,7 @@
         localStorage.setItem('mc_token', data.token);
         localStorage.setItem('mc_user',  JSON.stringify(data.user));
         showToast(`🎉 Welcome, ${name.split(' ')[0]}!`, 'success');
-        setTimeout(() => window.location.href = 'dashboard.html', 1200);
+        setTimeout(() => window.location.href = 'onboarding.html', 1200);
       } else {
         showToast(data.errors?.[0]?.msg || data.message || 'Signup failed.', 'error');
       }
