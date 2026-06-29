@@ -149,6 +149,11 @@
         </div>
       </div>
 
+      <!-- Terms -->
+      <p class="text-xs text-center text-ink-muted px-2">
+        By creating an account you agree to our <a href="#" class="text-teal font-semibold hover:underline">Terms of Service</a> and <a href="#" class="text-teal font-semibold hover:underline">Privacy Policy</a>
+      </p>
+
       <!-- Submit -->
       <button id="submitBtn" class="relative w-full mt-2 py-4 bg-ink text-white text-sm font-semibold rounded-xl shadow-md hover:bg-teal-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2 group overflow-hidden" type="submit">
         <span class="btn-text">Create Account</span>
@@ -197,27 +202,7 @@
 
 </main>
 
-<!-- Side decoration (desktop) -->
-<div class="hidden xl:flex fixed right-12 bottom-12 w-64 h-64 glass-surface rounded-3xl p-6 flex-col justify-between shadow-2xl animate-float">
-  <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-teal/30">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD98X2Fm9_gS2-a5yZ6Bf49tyuVCOn0TMPgFe1NxXcMZnvu2UWt8y0sL1nJD7t1Cf4K2Ho-uaQG1MY9Qq5CuahD0Lbdxi89EJ1-imB1fXxiPIWUq5dg35sVAS_zDjDHjKu-IZfomBjUl8B2yBmnzQi3x4QWXiet9Nawx_vR2XMO-bFV3trlo6yQiW-g54V4GcWCUDTCjqIrQ4YTgaCC4v_1xfncT7SCjECs_ES0J9ZyTz-fiwqso4_BYOMOOn78G7dq5YDMoYz5rg" alt=""/>
-    </div>
-    <div>
-      <p class="text-xs font-semibold text-ink">Dr. Arjun Mehta</p>
-      <p class="text-xs text-teal">AIIMS Delhi · AIR 7</p>
-    </div>
-  </div>
-  <div class="space-y-3">
-    <div class="h-1.5 w-full bg-border rounded-full overflow-hidden">
-      <div class="h-full bg-teal w-[85%] rounded-full"></div>
-    </div>
-    <p class="text-xs text-ink-muted italic leading-relaxed">"Clarity of method separates the top 0.1% from the rest."</p>
-  </div>
-  <div class="flex justify-end">
-    <span class="material-symbols-outlined text-teal/30 text-[48px]">format_quote</span>
-  </div>
-</div>
+
 
 <script>
   const API_BASE = 'http://localhost:5000/api';
