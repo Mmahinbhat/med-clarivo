@@ -30,7 +30,7 @@
   .option-card:hover { border-color:#0D9488; background:#F0FDFA; color:#0C1B2E; }
   .option-card.selected { border-color:#0D9488; background:#F0FDFA; color:#0C1B2E; }
   .option-card.selected .option-dot { background:#0D9488; }
-  .option-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; flex-shrink:0; transition:background 0.2s; }
+  .option-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; flex-shrink:0; transition:background 0.2s; pointer-events:none; }
   .step-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; transition:all 0.3s; }
   .step-dot.active { background:#0D9488; width:24px; border-radius:4px; }
   .step-dot.done { background:#0D9488; }
@@ -82,11 +82,11 @@
         <p class="text-xs text-ink-muted">We'll match you with the right mentors.</p>
       </div>
       <div class="space-y-3" id="examOptions">
-        <div class="option-card" onclick="selectOption(this,'exam','NEET UG')"><div class="option-dot"></div> NEET UG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','NEET PG')"><div class="option-dot"></div> NEET PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','AIIMS')"><div class="option-dot"></div> AIIMS PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','JIPMER')"><div class="option-dot"></div> JIPMER PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','USMLE')"><div class="option-dot"></div> USMLE</div>
+        <div class="option-card" onclick="selectOption(this,'exam','NEET UG')"><div class="option-dot" style="pointer-events:none"></div> NEET UG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','NEET PG')"><div class="option-dot" style="pointer-events:none"></div> NEET PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','AIIMS')"><div class="option-dot" style="pointer-events:none"></div> AIIMS PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','JIPMER')"><div class="option-dot" style="pointer-events:none"></div> JIPMER PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','USMLE')"><div class="option-dot" style="pointer-events:none"></div> USMLE</div>
       </div>
     </div>
 
@@ -118,11 +118,11 @@
         <p class="text-xs text-ink-muted">We'll build your plan around your schedule.</p>
       </div>
       <div class="space-y-3">
-        <div class="option-card" onclick="selectOption(this,'hours','Less than 2 hours')"><div class="option-dot"></div> Less than 2 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','2–4 hours')"><div class="option-dot"></div> 2–4 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','4–6 hours')"><div class="option-dot"></div> 4–6 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','6–8 hours')"><div class="option-dot"></div> 6–8 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','8+ hours')"><div class="option-dot"></div> 8+ hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','Less than 2 hours')"><div class="option-dot" style="pointer-events:none"></div> Less than 2 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','2–4 hours')"><div class="option-dot" style="pointer-events:none"></div> 2–4 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','4–6 hours')"><div class="option-dot" style="pointer-events:none"></div> 4–6 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','6–8 hours')"><div class="option-dot" style="pointer-events:none"></div> 6–8 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','8+ hours')"><div class="option-dot" style="pointer-events:none"></div> 8+ hours</div>
       </div>
     </div>
 
@@ -222,7 +222,8 @@
   function nextStep() {
     const keys = ['exam', 'level', 'institution', 'hours'];
     const key  = keys[currentStep - 1];
-    if (!answers[key]) return showToast('Please select an option to continue.', 'error');
+    const val  = answers[key];
+    if (!val || val === null || val === undefined) return showToast('Please select an option to continue.', 'error');
 
     if (currentStep === 4) {
       const user = JSON.parse(localStorage.getItem('mc_user') || '{}');
