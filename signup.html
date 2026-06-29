@@ -278,29 +278,15 @@
     btn.querySelectorAll('.btn-text').forEach(el => el.classList.add('opacity-0'));
     btn.querySelector('.spinner').classList.remove('hidden');
 
-    try {
-      const res  = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password }),
-      });
-      const data = await res.json();
+    // ── DEMO MODE: simulate API call ──
+    await new Promise(r => setTimeout(r, 1500));
 
-      if (res.ok && data.success) {
-        localStorage.setItem('mc_token', data.token);
-        localStorage.setItem('mc_user',  JSON.stringify(data.user));
-        showToast(`🎉 Welcome, ${name.split(' ')[0]}!`, 'success');
-        setTimeout(() => window.location.href = 'onboarding.html', 1200);
-      } else {
-        showToast(data.errors?.[0]?.msg || data.message || 'Signup failed.', 'error');
-      }
-    } catch {
-      showToast('Cannot reach server. Please try again.', 'error');
-    } finally {
-      btn.classList.remove('opacity-80', 'pointer-events-none');
-      btn.querySelectorAll('.btn-text').forEach(el => el.classList.remove('opacity-0'));
-      btn.querySelector('.spinner').classList.add('hidden');
-    }
+    // Save demo user to localStorage
+    localStorage.setItem('mc_token', 'demo_token_' + Date.now());
+    localStorage.setItem('mc_user', JSON.stringify({ name, email, phone, isNewUser: true }));
+
+    showToast(`🎉 Welcome, ${name.split(' ')[0]}!`, 'success');
+    setTimeout(() => window.location.href = 'onboarding.html', 1200);
   });
 
   // OAuth
