@@ -3,9 +3,6 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
 <title>MedClarivo Elite — Tell us about yourself</title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -33,7 +30,7 @@
   .option-card:hover { border-color:#0D9488; background:#F0FDFA; color:#0C1B2E; }
   .option-card.selected { border-color:#0D9488; background:#F0FDFA; color:#0C1B2E; }
   .option-card.selected .option-dot { background:#0D9488; }
-  .option-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; flex-shrink:0; transition:background 0.2s; pointer-events:none; }
+  .option-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; flex-shrink:0; transition:background 0.2s; }
   .step-dot { width:8px; height:8px; border-radius:50%; background:#E2E8F0; transition:all 0.3s; }
   .step-dot.active { background:#0D9488; width:24px; border-radius:4px; }
   .step-dot.done { background:#0D9488; }
@@ -85,11 +82,11 @@
         <p class="text-xs text-ink-muted">We'll match you with the right mentors.</p>
       </div>
       <div class="space-y-3" id="examOptions">
-        <div class="option-card" onclick="selectOption(this,'exam','NEET UG')"><div class="option-dot" style="pointer-events:none"></div> NEET UG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','NEET PG')"><div class="option-dot" style="pointer-events:none"></div> NEET PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','AIIMS')"><div class="option-dot" style="pointer-events:none"></div> AIIMS PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','JIPMER')"><div class="option-dot" style="pointer-events:none"></div> JIPMER PG</div>
-        <div class="option-card" onclick="selectOption(this,'exam','USMLE')"><div class="option-dot" style="pointer-events:none"></div> USMLE</div>
+        <div class="option-card" onclick="selectOption(this,'exam','NEET UG')"><div class="option-dot"></div> NEET UG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','NEET PG')"><div class="option-dot"></div> NEET PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','AIIMS')"><div class="option-dot"></div> AIIMS PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','JIPMER')"><div class="option-dot"></div> JIPMER PG</div>
+        <div class="option-card" onclick="selectOption(this,'exam','USMLE')"><div class="option-dot"></div> USMLE</div>
       </div>
     </div>
 
@@ -121,11 +118,11 @@
         <p class="text-xs text-ink-muted">We'll build your plan around your schedule.</p>
       </div>
       <div class="space-y-3">
-        <div class="option-card" onclick="selectOption(this,'hours','Less than 2 hours')"><div class="option-dot" style="pointer-events:none"></div> Less than 2 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','2–4 hours')"><div class="option-dot" style="pointer-events:none"></div> 2–4 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','4–6 hours')"><div class="option-dot" style="pointer-events:none"></div> 4–6 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','6–8 hours')"><div class="option-dot" style="pointer-events:none"></div> 6–8 hours</div>
-        <div class="option-card" onclick="selectOption(this,'hours','8+ hours')"><div class="option-dot" style="pointer-events:none"></div> 8+ hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','Less than 2 hours')"><div class="option-dot"></div> Less than 2 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','2–4 hours')"><div class="option-dot"></div> 2–4 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','4–6 hours')"><div class="option-dot"></div> 4–6 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','6–8 hours')"><div class="option-dot"></div> 6–8 hours</div>
+        <div class="option-card" onclick="selectOption(this,'hours','8+ hours')"><div class="option-dot"></div> 8+ hours</div>
       </div>
     </div>
 
@@ -154,36 +151,36 @@
     'NEET UG': {
       step2Title: 'Where are you in school?',
       levels: ['Class 11 (Just started)', 'Class 12 (Appearing)', 'Dropper – 1st attempt', 'Dropper – 2nd attempt', 'Dropper – 3rd attempt or more'],
-      step3Title: 'What's your dream medical college?',
-      step3Sub: 'We'll help you target the right colleges.',
+      step3Title: "What's your dream medical college?",
+      step3Sub: "We'll help you target the right colleges.",
       institutions: ['AIIMS New Delhi', 'AIIMS Mumbai / Jodhpur / Bhopal', 'Maulana Azad Medical College', 'Grant Medical College Mumbai', 'Any Top Government Medical College'],
     },
     'NEET PG': {
       step2Title: 'Where are you in your MBBS?',
       levels: ['1st year MBBS', '2nd year MBBS', '3rd year MBBS', 'Final year MBBS', 'Intern / Just completed MBBS'],
-      step3Title: 'What's your dream PG college?',
-      step3Sub: 'Tell us where you want to specialize.',
+      step3Title: "What's your dream PG college?",
+      step3Sub: "Tell us where you want to specialize.",
       institutions: ['AIIMS New Delhi (MD/MS)', 'PGI Chandigarh', 'JIPMER Puducherry', 'Maulana Azad Medical College PG', 'Any Top Government PG College'],
     },
     'AIIMS': {
       step2Title: 'Where are you in your MBBS?',
       levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Completed MBBS – 2nd attempt', 'Completed MBBS – 3rd attempt or more'],
-      step3Title: 'Which AIIMS specialty are you targeting?',
-      step3Sub: 'Pick your dream department.',
+      step3Title: "Which AIIMS specialty are you targeting?",
+      step3Sub: "Pick your dream department.",
       institutions: ['Internal Medicine', 'Surgery', 'Paediatrics', 'Obstetrics & Gynaecology', 'Orthopaedics', 'Radiology', 'Anaesthesia'],
     },
     'JIPMER': {
       step2Title: 'Where are you in your MBBS?',
       levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Completed MBBS – 2nd attempt', 'Completed MBBS – 3rd attempt or more'],
-      step3Title: 'Which JIPMER specialty are you targeting?',
-      step3Sub: 'Pick your dream department at JIPMER.',
+      step3Title: "Which JIPMER specialty are you targeting?",
+      step3Sub: "Pick your dream department at JIPMER.",
       institutions: ['Internal Medicine', 'Paediatrics', 'Surgery', 'Obstetrics & Gynaecology', 'Dermatology', 'Psychiatry', 'Ophthalmology'],
     },
     'USMLE': {
       step2Title: 'Which USMLE step are you preparing for?',
       levels: ['Step 1', 'Step 2 CK', 'Step 3', 'Already passed Step 1 – preparing Step 2', 'Already passed Step 2 – preparing Step 3'],
-      step3Title: 'Which country/residency are you targeting?',
-      step3Sub: 'Tell us your residency goal.',
+      step3Title: "Which country/residency are you targeting?",
+      step3Sub: "Tell us your residency goal.",
       institutions: ['USA – Internal Medicine residency', 'USA – Surgery residency', 'USA – Paediatrics residency', 'USA – Family Medicine residency', 'Canada – IMG pathway', 'UK – PLAB pathway'],
     },
   };
@@ -225,8 +222,7 @@
   function nextStep() {
     const keys = ['exam', 'level', 'institution', 'hours'];
     const key  = keys[currentStep - 1];
-    const val  = answers[key];
-    if (!val || val === null || val === undefined) return showToast('Please select an option to continue.', 'error');
+    if (!answers[key]) return showToast('Please select an option to continue.', 'error');
 
     if (currentStep === 4) {
       const user = JSON.parse(localStorage.getItem('mc_user') || '{}');
@@ -279,4 +275,3 @@
 </script>
 </body>
 </html>
-
