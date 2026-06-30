@@ -109,20 +109,20 @@
       </div>
       <div class="space-y-3" id="institutionOptions"></div>
 
-      <!-- Score input variant (for droppers) -->
+      <!-- Score input variant (for repeaters) -->
       <div class="space-y-5 hidden" id="scoreInputs">
         <div class="space-y-2">
-          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="prevScore">Previous NEET Score</label>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" id="prevScoreLabel" for="prevScore">Previous Score</label>
           <div class="relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint text-[20px]">history</span>
-            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="prevScore" type="number" min="0" max="720" placeholder="e.g. 540"/>
+            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="prevScore" type="number" min="0" placeholder="e.g. 540"/>
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="targetScore">Target NEET Score</label>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" id="targetScoreLabel" for="targetScore">Target Score</label>
           <div class="relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint text-[20px]">target</span>
-            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="targetScore" type="number" min="0" max="720" placeholder="e.g. 650"/>
+            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="targetScore" type="number" min="0" placeholder="e.g. 650"/>
           </div>
         </div>
       </div>
@@ -172,27 +172,35 @@
       step3Title: "What's your dream medical college?",
       step3Sub: "We'll help you target the right colleges.",
       institutions: ['AIIMS New Delhi', 'AIIMS Mumbai / Jodhpur / Bhopal', 'Maulana Azad Medical College', 'Grant Medical College Mumbai', 'Any Top Government Medical College'],
+      repeaterKeyword: 'dropper',
+      scoreLabel: 'NEET', scoreMax: 720,
     },
     'NEET PG': {
-      step2Title: 'Where are you in your MBBS?',
-      levels: ['1st year MBBS', '2nd year MBBS', '3rd year MBBS', 'Final year MBBS', 'Intern / Just completed MBBS'],
+      step2Title: 'Where are you in your MBBS / PG prep?',
+      levels: ['1st year MBBS', '2nd year MBBS', '3rd year MBBS', 'Final year MBBS', 'Intern / Just completed MBBS', 'Repeater – already attempted NEET PG'],
       step3Title: "What's your dream PG college?",
       step3Sub: "Tell us where you want to specialize.",
       institutions: ['AIIMS New Delhi (MD/MS)', 'PGI Chandigarh', 'JIPMER Puducherry', 'Maulana Azad Medical College PG', 'Any Top Government PG College'],
+      repeaterKeyword: 'repeater',
+      scoreLabel: 'NEET PG', scoreMax: 800,
     },
     'AIIMS': {
-      step2Title: 'Where are you in your MBBS?',
-      levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Completed MBBS – 2nd attempt', 'Completed MBBS – 3rd attempt or more'],
+      step2Title: 'Where are you in your MBBS / prep?',
+      levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Repeater – already attempted AIIMS PG'],
       step3Title: "Which AIIMS specialty are you targeting?",
       step3Sub: "Pick your dream department.",
       institutions: ['Internal Medicine', 'Surgery', 'Paediatrics', 'Obstetrics & Gynaecology', 'Orthopaedics', 'Radiology', 'Anaesthesia'],
+      repeaterKeyword: 'repeater',
+      scoreLabel: 'AIIMS PG', scoreMax: 800,
     },
     'JIPMER': {
-      step2Title: 'Where are you in your MBBS?',
-      levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Completed MBBS – 2nd attempt', 'Completed MBBS – 3rd attempt or more'],
+      step2Title: 'Where are you in your MBBS / prep?',
+      levels: ['Final year MBBS', 'Intern', 'Completed MBBS – 1st attempt', 'Repeater – already attempted JIPMER PG'],
       step3Title: "Which JIPMER specialty are you targeting?",
       step3Sub: "Pick your dream department at JIPMER.",
       institutions: ['Internal Medicine', 'Paediatrics', 'Surgery', 'Obstetrics & Gynaecology', 'Dermatology', 'Psychiatry', 'Ophthalmology'],
+      repeaterKeyword: 'repeater',
+      scoreLabel: 'JIPMER PG', scoreMax: 800,
     },
     'USMLE': {
       step2Title: 'Which USMLE step are you preparing for?',
@@ -200,6 +208,8 @@
       step3Title: "Which country/residency are you targeting?",
       step3Sub: "Tell us your residency goal.",
       institutions: ['USA – Internal Medicine residency', 'USA – Surgery residency', 'USA – Paediatrics residency', 'USA – Family Medicine residency', 'Canada – IMG pathway', 'UK – PLAB pathway'],
+      repeaterKeyword: 'already passed',
+      scoreLabel: 'USMLE Step', scoreMax: 300,
     },
   };
 
@@ -220,10 +230,11 @@
     el.classList.add('selected');
     answers[key] = value;
 
-    // Special case: NEET UG + Dropper level → switch step 3 to score inputs
-    if (key === 'level' && answers.exam === 'NEET UG') {
-      const isDropper = value.toLowerCase().includes('dropper');
-      toggleStep3Mode(isDropper);
+    // Generic repeater check: if level mentions the exam's repeater keyword → score mode
+    if (key === 'level') {
+      const data = DATA[answers.exam];
+      const isRepeater = value.toLowerCase().includes(data.repeaterKeyword);
+      toggleStep3Mode(isRepeater);
     }
   }
 
@@ -232,17 +243,23 @@
     const scoreBox   = document.getElementById('scoreInputs');
     const title      = document.getElementById('step3Title');
     const sub        = document.getElementById('step3Sub');
+    const data       = DATA[answers.exam];
 
     if (isScoreMode) {
       optionsBox.classList.add('hidden');
       scoreBox.classList.remove('hidden');
       title.textContent = "Let's set your score goal";
       sub.textContent   = "Tell us where you stood and where you're headed.";
+      document.getElementById('prevScoreLabel').textContent   = `Previous ${data.scoreLabel} Score`;
+      document.getElementById('targetScoreLabel').textContent = `Target ${data.scoreLabel} Score`;
+      document.getElementById('prevScore').max   = data.scoreMax;
+      document.getElementById('targetScore').max = data.scoreMax;
+      document.getElementById('prevScore').placeholder   = `e.g. ${Math.round(data.scoreMax * 0.7)}`;
+      document.getElementById('targetScore').placeholder = `e.g. ${Math.round(data.scoreMax * 0.9)}`;
       answers.institution = 'score-mode'; // marks step as answerable
     } else {
       optionsBox.classList.remove('hidden');
       scoreBox.classList.add('hidden');
-      const data = DATA[answers.exam];
       title.textContent = data.step3Title;
       sub.textContent   = data.step3Sub;
       answers.institution = null;
