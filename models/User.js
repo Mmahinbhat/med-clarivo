@@ -36,7 +36,19 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  lastLogin: { type: Date },
+  lastLogin: { type: Date }, 
+  // Onboarding
+  onboardingComplete: {
+    type: Boolean,
+    default: false,
+  },
+  onboarding: {
+    exam:        { type: String },
+    level:       { type: String },
+    institution: { type: String },
+    hours:       { type: String },
+    prevScore:   { type: Number },
+    targetScore: { type: Number },
 }, {
   timestamps: true,
 });
