@@ -163,7 +163,7 @@
 <script>
   const answers = { exam: null, level: null, institution: null, hours: null };
   let currentStep = 1;
-
+  const API_BASE = 'https://med-clarivo.onrender.com/api';
   // ── Dynamic options based on exam ──────────────────────────
   const DATA = {
     'NEET UG': {
@@ -282,7 +282,7 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  function nextStep() {
+  async function nextStep() {
     const keys = ['exam', 'level', 'institution', 'hours'];
     const key  = keys[currentStep - 1];
 
