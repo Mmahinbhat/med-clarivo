@@ -761,10 +761,31 @@
   }
 
   // ── Redirect after login ──────────────────────
-  function redirectToDashboard() {
-    // Change this to your dashboard URL when ready
+async function redirectToDashboard() {
+  const token = localStorage.getItem('mc_token');
+  if (!token) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      localStorage.setItem('mc_user', JSON.stringify(data.user));
+      if (data.user.onboardingComplete) {
+        window.location.href = 'dashboard.html';
+      } else {
+        window.location.href = 'onboarding.html';
+      }
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  } catch (err) {
     window.location.href = 'dashboard.html';
   }
+}
 
   // ── Password toggle ───────────────────────────
   const pwToggle = document.getElementById('pwToggle');
