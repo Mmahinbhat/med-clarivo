@@ -19,7 +19,7 @@ const sendToken = (res, user, statusCode = 200) => {
 // ── Helper: redirect with token (OAuth flows) ─────────────────
 const redirectWithToken = (res, user) => {
   const token    = signToken(user._id);
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+  const clientUrl = process.env.CLIENT_REDIRECT_URL || process.env.CLIENT_URL || 'http://localhost:3000';
   res.redirect(`${clientUrl}?token=${token}`);
 };
 
