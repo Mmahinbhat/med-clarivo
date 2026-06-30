@@ -509,7 +509,7 @@
 
             <div class="panel panel-lift p-5 flex-shrink-0 w-[300px]">
               <div class="flex items-center justify-between mb-3">
-                <span class="chip" style="background:rgba(37,99,235,0.08);color:#1D4ED8" id="subjectChip1">Physics</span>
+                <span class="chip" style="background:rgba(37,99,235,0.08);color:#1D4ED8" id="clChip1">Physics</span>
                 <span class="text-ink-faint text-xs font-mono">52 min left</span>
               </div>
               <p class="font-display text-[19px] text-ink leading-snug mb-1">Rotational Mechanics &amp; Torque</p>
@@ -675,19 +675,19 @@
                   <svg class="w-full h-full -rotate-90" viewBox="0 0 60 60">
                     <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(11,18,32,0.07)" stroke-width="6"/>
                     <circle cx="30" cy="30" r="25" fill="none" stroke="#2563EB" stroke-width="6" stroke-linecap="round"
-                      stroke-dasharray="157" stroke-dashoffset="39"/>
+                      stroke-dasharray="157" stroke-dashoffset="39" id="subjectRing1"/>
                   </svg>
-                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono">75%</span>
+                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono" id="subjectPct1">75%</span>
                 </div>
                 <div>
                   <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
-                  <p class="font-display text-2xl text-ink">155<span class="text-ink-faint text-sm font-sans">/180</span></p>
+                  <p class="font-display text-2xl text-ink"><span id="subjectScoreNum1">155</span><span class="text-ink-faint text-sm font-sans">/<span id="subjectScoreMax1">180</span></span></p>
                 </div>
               </div>
               <svg viewBox="0 0 240 40" class="w-full h-9 mb-3">
                 <path class="spark-path" d="M0,30 L30,24 L60,26 L90,18 L120,20 L150,12 L180,15 L210,8 L240,6" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold">Optics</span></p>
+              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold" id="subjectWeak1">Optics</span></p>
             </div>
 
             <!-- Chemistry -->
@@ -701,19 +701,19 @@
                   <svg class="w-full h-full -rotate-90" viewBox="0 0 60 60">
                     <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(11,18,32,0.07)" stroke-width="6"/>
                     <circle cx="30" cy="30" r="25" fill="none" stroke="#0FA89A" stroke-width="6" stroke-linecap="round"
-                      stroke-dasharray="157" stroke-dashoffset="19"/>
+                      stroke-dasharray="157" stroke-dashoffset="19" id="subjectRing2"/>
                   </svg>
-                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono">88%</span>
+                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono" id="subjectPct2">88%</span>
                 </div>
                 <div>
                   <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
-                  <p class="font-display text-2xl text-ink">172<span class="text-ink-faint text-sm font-sans">/180</span></p>
+                  <p class="font-display text-2xl text-ink"><span id="subjectScoreNum2">172</span><span class="text-ink-faint text-sm font-sans">/<span id="subjectScoreMax2">180</span></span></p>
                 </div>
               </div>
               <svg viewBox="0 0 240 40" class="w-full h-9 mb-3">
                 <path class="spark-path" d="M0,26 L30,28 L60,18 L90,20 L120,10 L150,14 L180,8 L210,10 L240,4" fill="none" stroke="#0FA89A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold">Coordination Compounds</span></p>
+              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold" id="subjectWeak2">Coordination Compounds</span></p>
             </div>
 
             <!-- Biology -->
@@ -727,19 +727,19 @@
                   <svg class="w-full h-full -rotate-90" viewBox="0 0 60 60">
                     <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(11,18,32,0.07)" stroke-width="6"/>
                     <circle cx="30" cy="30" r="25" fill="none" stroke="#7C3AED" stroke-width="6" stroke-linecap="round"
-                      stroke-dasharray="157" stroke-dashoffset="9"/>
+                      stroke-dasharray="157" stroke-dashoffset="9" id="subjectRing3"/>
                   </svg>
-                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono">94%</span>
+                  <span class="absolute inset-0 flex items-center justify-center text-[12px] font-bold font-mono" id="subjectPct3">94%</span>
                 </div>
                 <div>
                   <p class="text-[10px] text-ink-faint uppercase tracking-wider">Avg Score</p>
-                  <p class="font-display text-2xl text-ink">345<span class="text-ink-faint text-sm font-sans">/360</span></p>
+                  <p class="font-display text-2xl text-ink"><span id="subjectScoreNum3">345</span><span class="text-ink-faint text-sm font-sans">/<span id="subjectScoreMax3">360</span></span></p>
                 </div>
               </div>
               <svg viewBox="0 0 240 40" class="w-full h-9 mb-3">
                 <path class="spark-path" d="M0,20 L30,16 L60,18 L90,10 L120,12 L150,6 L180,8 L210,4 L240,5" fill="none" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold">Genetics &amp; Evolution</span></p>
+              <p class="text-[11px] text-ink-faint">Weak topic: <span class="text-ink font-semibold" id="subjectWeak3">Genetics &amp; Evolution</span></p>
             </div>
           </div>
         </section>
@@ -1022,12 +1022,50 @@
 
   // ── Exam config (per-exam labels, subjects, target dates) ──
   const API_BASE = 'https://med-clarivo.onrender.com/api';
+  // Each subject entry: { name, pct, num, max, weak } — placeholder mastery data, scoped per-subject
+  // so it's at least internally consistent (real tracking is a future phase).
+  const SUBJECT_SETS = {
+    neetUg: [
+      { name: 'Physics',   pct: 75, num: 155, max: 180, weak: 'Optics' },
+      { name: 'Chemistry', pct: 88, num: 172, max: 180, weak: 'Coordination Compounds' },
+      { name: 'Biology',   pct: 94, num: 345, max: 360, weak: 'Genetics & Evolution' },
+    ],
+    pgClinical: [ // NEET PG, AIIMS PG, JIPMER PG — all sit INI-CET / NEET PG style broad clinical exams
+      { name: 'Medicine',     pct: 78, num: 78, max: 100, weak: 'Cardiology' },
+      { name: 'Surgery',      pct: 82, num: 82, max: 100, weak: 'Surgical Oncology' },
+      { name: 'Obs & Gynae',  pct: 90, num: 90, max: 100, weak: 'High-risk Obstetrics' },
+    ],
+    usmleStep1: [
+      { name: 'Anatomy & Physiology', pct: 80, num: 80, max: 100, weak: 'Renal Physiology' },
+      { name: 'Pathology',            pct: 85, num: 85, max: 100, weak: 'Neoplasia' },
+      { name: 'Pharmacology',         pct: 76, num: 76, max: 100, weak: 'Autonomic Drugs' },
+    ],
+    usmleStep2: [
+      { name: 'Internal Medicine',       pct: 82, num: 82, max: 100, weak: 'Endocrinology' },
+      { name: 'Surgery',                 pct: 79, num: 79, max: 100, weak: 'Trauma Management' },
+      { name: 'Obstetrics & Gynaecology',pct: 88, num: 88, max: 100, weak: 'High-risk Pregnancy' },
+    ],
+    usmleStep3: [
+      { name: 'Patient Management',   pct: 84, num: 84, max: 100, weak: 'Multi-system Care' },
+      { name: 'Ambulatory Medicine',  pct: 88, num: 88, max: 100, weak: 'Preventive Care' },
+      { name: 'Clinical Therapeutics',pct: 80, num: 80, max: 100, weak: 'Drug Interactions' },
+    ],
+  };
+
+  // USMLE subjects depend on which step the user is actually prepping for right now
+  function usmleSubjectsForLevel(level){
+    const l = (level || '').toLowerCase();
+    if (l.includes('step 3') || l.includes('preparing step 3')) return SUBJECT_SETS.usmleStep3;
+    if (l.includes('step 2') || l.includes('preparing step 2')) return SUBJECT_SETS.usmleStep2;
+    return SUBJECT_SETS.usmleStep1; // 'Step 1' or default
+  }
+
   const EXAM_CONFIG = {
-    'NEET UG': { displayLabel: 'NEET UG',  examName: 'NEET UG', examDate: '2027-05-02T09:00:00', subjects: ['Physics', 'Chemistry', 'Biology'] },
-    'NEET PG': { displayLabel: 'NEET PG',  examName: 'NEET PG', examDate: '2026-08-30T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
-    'AIIMS':   { displayLabel: 'AIIMS PG', examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
-    'JIPMER':  { displayLabel: 'JIPMER PG',examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
-    'USMLE':   { displayLabel: 'USMLE',    examName: 'USMLE',   examDate: null,                   subjects: ['Anatomy & Physiology', 'Pathology', 'Pharmacology'] },
+    'NEET UG': { displayLabel: 'NEET UG',  examName: 'NEET UG', examDate: '2027-05-02T09:00:00', subjects: () => SUBJECT_SETS.neetUg },
+    'NEET PG': { displayLabel: 'NEET PG',  examName: 'NEET PG', examDate: '2026-08-30T09:00:00', subjects: () => SUBJECT_SETS.pgClinical },
+    'AIIMS':   { displayLabel: 'AIIMS PG', examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: () => SUBJECT_SETS.pgClinical },
+    'JIPMER':  { displayLabel: 'JIPMER PG',examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: () => SUBJECT_SETS.pgClinical },
+    'USMLE':   { displayLabel: 'USMLE',    examName: 'USMLE',   examDate: null,                   subjects: usmleSubjectsForLevel },
   };
   let activeExamTarget = '2027-05-02T09:00:00'; // fallback until real user data loads
 
@@ -1087,11 +1125,25 @@
       if (countdownWrapEl) countdownWrapEl.style.display = 'none';
     }
 
-    // Subject Performance chips
-    const chipIds = ['subjectChip1', 'subjectChip2', 'subjectChip3'];
-    chipIds.forEach((id, i) => {
-      const el = document.getElementById(id);
-      if (el && cfg.subjects[i]) el.textContent = cfg.subjects[i];
+    // Subject Performance cards — name, mastery ring, score, weak topic — all swapped together
+    const subjects = (typeof cfg.subjects === 'function')
+      ? cfg.subjects(onboarding && onboarding.level)
+      : cfg.subjects;
+    const CIRC = 157; // matches the fixed stroke-dasharray on each ring
+    subjects.forEach((subj, i) => {
+      const n = i + 1;
+      const chipEl   = document.getElementById(`subjectChip${n}`);
+      const ringEl   = document.getElementById(`subjectRing${n}`);
+      const pctEl    = document.getElementById(`subjectPct${n}`);
+      const numEl    = document.getElementById(`subjectScoreNum${n}`);
+      const maxEl    = document.getElementById(`subjectScoreMax${n}`);
+      const weakEl   = document.getElementById(`subjectWeak${n}`);
+      if (chipEl) chipEl.textContent = subj.name;
+      if (ringEl) ringEl.setAttribute('stroke-dashoffset', String(CIRC * (1 - subj.pct / 100)));
+      if (pctEl)  pctEl.textContent = subj.pct + '%';
+      if (numEl)  numEl.textContent = subj.num;
+      if (maxEl)  maxEl.textContent = subj.max;
+      if (weakEl) weakEl.textContent = subj.weak;
     });
   }
 
