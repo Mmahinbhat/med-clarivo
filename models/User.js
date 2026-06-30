@@ -20,12 +20,10 @@ const UserSchema = new mongoose.Schema({
   passwordHash: {
     type: String, // null for OAuth-only users
   },
-
   // OAuth
   googleId:  { type: String },
   appleId:   { type: String },
   avatar:    { type: String },
-
   // Meta
   role: {
     type: String,
@@ -36,7 +34,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  lastLogin: { type: Date }, 
+  lastLogin: { type: Date },
   // Onboarding
   onboardingComplete: {
     type: Boolean,
@@ -49,6 +47,7 @@ const UserSchema = new mongoose.Schema({
     hours:       { type: String },
     prevScore:   { type: Number },
     targetScore: { type: Number },
+  },
 }, {
   timestamps: true,
 });
@@ -66,12 +65,4 @@ UserSchema.methods.comparePassword = async function (candidate) {
   return bcrypt.compare(candidate, this.passwordHash);
 };
 
-// Strip sensitive fields from JSON output
-UserSchema.methods.toJSON = function () {
-  const obj = this.toObject();
-  delete obj.passwordHash;
-  delete obj.__v;
-  return obj;
-};
-
-module.exports = mongoose.model('User', UserSchema);
+// Strip
