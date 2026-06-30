@@ -98,7 +98,28 @@ router.post('/login', [
 router.get('/me', protect, (req, res) => {
   res.json({ success: true, user: req.user });
 });
+// ════════════════════════════════════════════════════════════════
+// PATCH /api/auth/onboarding  (protected) — save onboarding answers
+// ════════════════════════════════════════════════════════════════
+router.patch('/onboarding', protect, async (req, res) => {
+  try {
+    const { exam, level, institution, hours, prevScore, targetScore } = req.body;
 
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    user.onboarding = { exam, level, institution, hours, prevScore, targetScore };
+    user.onboardingComplete = true;
+    await user.save();
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
 // ════════════════════════════════════════════════════════════════
 // GOOGLE OAuth
 // ════════════════════════════════════════════════════════════════
