@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
+console.log('JWT_SECRET length:', (process.env.JWT_SECRET || '').length, 'first4:', (process.env.JWT_SECRET || '').slice(0,4));
 
 // ── Security & Middleware ─────────────────────────────────────
 app.use(helmet());
