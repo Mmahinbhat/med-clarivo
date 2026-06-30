@@ -308,13 +308,28 @@
   document.getElementById('googleBtn').addEventListener('click', () => window.location.href = `${API_BASE}/auth/google`);
   document.getElementById('appleBtn').addEventListener('click',  () => window.location.href = `${API_BASE}/auth/apple`);
 
-  // Check for OAuth token on redirect back
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('token')) {
-    localStorage.setItem('mc_token', params.get('token'));
-    window.history.replaceState({}, '', window.location.pathname);
-    showToast('✅ Account created!', 'success');
-    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+ // Check for OAuth token on redirect back
+const params = new URLSearchParams(window.location.search);
+if (params.get('token')) {
+  localStorage.setItem('mc_token', params.get('token'));
+  window.history.replaceState({}, '', window.location.pathname);
+  showToast('✅ Account created!', 'success');
+  setTimeout(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${params.get('token')}` },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        localStorage.setItem('mc_user', JSON.stringify(data.user));
+        window.location.href = data.user.onboardingComplete ? 'dashboard.html' : 'onboarding.html';
+      } else {
+        window.location.href = 'onboarding.html';
+      }
+    } catch (err) {
+      window.location.href = 'onboarding.html';
+    }
+  }, 1200);
   }
 </script>
 </body>
