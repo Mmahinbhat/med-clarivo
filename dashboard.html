@@ -133,6 +133,29 @@
   .panel:hover{ box-shadow:0 4px 10px rgba(11,18,32,0.05), 0 22px 44px -20px rgba(11,18,32,0.16); }
   .panel-lift:hover{ transform:translateY(-3px); }
 
+  /* Chapter modal */
+  #chapterModalOverlay{
+    position:fixed; inset:0; background:rgba(11,18,32,0.55);
+    display:none; align-items:center; justify-content:center; z-index:80; padding:24px;
+  }
+  #chapterModalOverlay.open{ display:flex; }
+  #chapterModal{
+    background:#fff; border-radius:22px; width:100%; max-width:560px; max-height:80vh;
+    display:flex; flex-direction:column; box-shadow:0 24px 64px -24px rgba(11,18,32,0.4);
+  }
+  .chapter-row{
+    display:flex; align-items:center; justify-content:between; gap:12px;
+    padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .chapter-row:last-child{ border-bottom:none; }
+  .chapter-action-btn{
+    font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px;
+    border:1.5px solid var(--teal); color:var(--teal-deep); background:transparent; cursor:pointer;
+    transition:all .15s ease; white-space:nowrap;
+  }
+  .chapter-action-btn:hover{ background:rgba(15,168,154,0.08); }
+  .chapter-action-btn.done{ border-color:rgba(11,18,32,0.12); color:var(--ink-soft); cursor:default; }
+
   /* Buttons */
   .btn-primary{
     background:linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
@@ -980,7 +1003,7 @@
       ? `${subj.completedChapters}/${subj.chapterCount} chapters completed`
       : `Not started yet · ${subj.chapterCount} chapters`;
     return `
-      <div class="panel panel-lift p-6">
+      <div class="panel panel-lift p-6 subject-card-clickable" style="cursor:pointer" data-subject-id="${subj.id}" data-subject-name="${subj.name}" data-subject-color="${color}">
         <div class="flex items-center justify-between mb-5">
           <span class="chip" style="background:${color}1A;color:${color}">${subj.name}</span>
         </div>
@@ -1013,10 +1036,91 @@
       if (res.ok && data.success && gridEl) {
         if (subtitleEl) subtitleEl.textContent = `${data.subjects.length} subjects`;
         gridEl.innerHTML = data.subjects.map((s, i) => subjectCardHTML(s, i)).join('');
+        gridEl.querySelectorAll('.subject-card-clickable').forEach(card => {
+          card.onclick = () => openSubjectModal(card.dataset.subjectId, card.dataset.subjectName, card.dataset.subjectColor);
+        });
       }
     } catch (err) {
       console.warn('Could not load subjects:', err);
       if (gridEl) gridEl.innerHTML = '<p class="text-ink-faint text-sm py-4">Could not load subjects right now.</p>';
+    }
+  }
+
+  // ── Chapter modal: open a subject, see real chapters, mark real progress ──
+  let activeModalSubjectId = null;
+
+  function chapterRowHTML(ch){
+    let actionHTML;
+    if (ch.status === 'completed') {
+      actionHTML = `<button class="chapter-action-btn done" disabled>Completed</button>`;
+    } else if (ch.status === 'in_progress') {
+      const nextUnits = Math.min(ch.totalUnits, ch.unitsCompleted + 1);
+      actionHTML = `<button class="chapter-action-btn" onclick="markChapterProgress('${ch.id}', ${nextUnits}, ${ch.totalUnits})">+1 unit (${ch.unitsCompleted}/${ch.totalUnits})</button>`;
+    } else {
+      actionHTML = `<button class="chapter-action-btn" onclick="markChapterProgress('${ch.id}', 1, ${ch.totalUnits})">Start</button>`;
+    }
+    return `
+      <div class="chapter-row">
+        <div style="flex:1">
+          <p class="text-ink text-[14px] font-semibold">${ch.title}</p>
+          <p class="text-ink-faint text-[12px]">${ch.estimatedMinutes} min &middot; ${ch.percentComplete}% complete</p>
+        </div>
+        ${actionHTML}
+      </div>`;
+  }
+
+  async function openSubjectModal(subjectId, subjectName, color){
+    activeModalSubjectId = subjectId;
+    document.getElementById('chapterModalTitle').textContent = subjectName;
+    document.getElementById('chapterModalOverlay').classList.add('open');
+    const listEl = document.getElementById('chapterModalList');
+    listEl.innerHTML = '<p class="text-ink-faint text-sm">Loading chapters&hellip;</p>';
+
+    const token = localStorage.getItem('mc_token');
+    if (!token) { listEl.innerHTML = '<p class="text-ink-faint text-sm">Please sign in to view chapters.</p>'; return; }
+
+    try {
+      const res = await fetch(`${API_BASE}/curriculum/subjects/${subjectId}/chapters`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        listEl.innerHTML = data.chapters.map(chapterRowHTML).join('') || '<p class="text-ink-faint text-sm">No chapters yet for this subject.</p>';
+      } else {
+        listEl.innerHTML = '<p class="text-ink-faint text-sm">Could not load chapters.</p>';
+      }
+    } catch (err) {
+      console.warn('Could not load chapters:', err);
+      listEl.innerHTML = '<p class="text-ink-faint text-sm">Could not load chapters right now.</p>';
+    }
+  }
+
+  function closeSubjectModal(){
+    document.getElementById('chapterModalOverlay').classList.remove('open');
+    activeModalSubjectId = null;
+  }
+
+  async function markChapterProgress(chapterId, unitsCompleted, totalUnits){
+    const token = localStorage.getItem('mc_token');
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE}/curriculum/progress/${chapterId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ unitsCompleted }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        // Refresh the open modal's chapter list, plus the live dashboard cards behind it
+        if (activeModalSubjectId) {
+          const subjName = document.getElementById('chapterModalTitle').textContent;
+          openSubjectModal(activeModalSubjectId, subjName, '#0FA89A');
+        }
+        loadSubjects(token);
+        loadContinueLearning(token);
+      }
+    } catch (err) {
+      console.warn('Could not update progress:', err);
     }
   }
 
@@ -1155,5 +1259,21 @@
   }
   document.getElementById('doubtInput').addEventListener('keydown', e => { if (e.key === 'Enter') askDoubt(); });
 </script>
+
+<!-- ═══ CHAPTER MODAL ═══ -->
+<div id="chapterModalOverlay" onclick="if(event.target===this) closeSubjectModal()">
+  <div id="chapterModal">
+    <div class="flex items-center justify-between p-5 border-b" style="border-color:var(--line)">
+      <h3 class="font-display text-xl text-ink" id="chapterModalTitle">Subject</h3>
+      <button class="btn-ghost-icon w-8 h-8 rounded-full flex items-center justify-center" onclick="closeSubjectModal()">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div class="p-5 overflow-y-auto" id="chapterModalList" style="flex:1">
+      <p class="text-ink-faint text-sm">Loading chapters&hellip;</p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
