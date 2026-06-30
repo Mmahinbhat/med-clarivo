@@ -65,4 +65,12 @@ UserSchema.methods.comparePassword = async function (candidate) {
   return bcrypt.compare(candidate, this.passwordHash);
 };
 
-// Strip
+// Strip sensitive fields from JSON output
+UserSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.passwordHash;
+  delete obj.__v;
+  return obj;
+};
+
+module.exports = mongoose.model('User', UserSchema);
