@@ -1023,11 +1023,11 @@
   // ── Exam config (per-exam labels, subjects, target dates) ──
   const API_BASE = 'https://med-clarivo.onrender.com/api';
   const EXAM_CONFIG = {
-    'NEET UG': { label: 'NEET UG',  examDate: '2027-05-02T09:00:00', subjects: ['Physics', 'Chemistry', 'Biology'] },
-    'AIIMS':   { label: 'AIIMS',    examDate: '2027-05-02T09:00:00', subjects: ['Physics', 'Chemistry', 'Biology'] },
-    'JIPMER':  { label: 'JIPMER',   examDate: '2027-05-02T09:00:00', subjects: ['Physics', 'Chemistry', 'Biology'] },
-    'NEET PG': { label: 'NEET PG',  examDate: '2026-08-30T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
-    'USMLE':   { label: 'USMLE',    examDate: null,                   subjects: ['Anatomy & Physiology', 'Pathology', 'Pharmacology'] },
+    'NEET UG': { displayLabel: 'NEET UG',  examName: 'NEET UG', examDate: '2027-05-02T09:00:00', subjects: ['Physics', 'Chemistry', 'Biology'] },
+    'NEET PG': { displayLabel: 'NEET PG',  examName: 'NEET PG', examDate: '2026-08-30T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
+    'AIIMS':   { displayLabel: 'AIIMS PG', examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
+    'JIPMER':  { displayLabel: 'JIPMER PG',examName: 'INI-CET', examDate: '2026-11-01T09:00:00', subjects: ['Medicine', 'Surgery', 'Obs & Gynae'] },
+    'USMLE':   { displayLabel: 'USMLE',    examName: 'USMLE',   examDate: null,                   subjects: ['Anatomy & Physiology', 'Pathology', 'Pharmacology'] },
   };
   let activeExamTarget = '2027-05-02T09:00:00'; // fallback until real user data loads
 
@@ -1060,7 +1060,7 @@
     if (greetingNameEl) greetingNameEl.textContent = firstName;
 
     const levelEl = document.getElementById('sidebarExamLevel');
-    if (levelEl) levelEl.textContent = `${cfg.label}${onboarding && onboarding.level ? ' · ' + onboarding.level : ''}`;
+    if (levelEl) levelEl.textContent = `${cfg.displayLabel}${onboarding && onboarding.level ? ' · ' + onboarding.level : ''}`;
 
     // Header target chip (institution, or target score for repeaters/droppers)
     const targetEl = document.getElementById('examTargetLabel');
@@ -1070,7 +1070,7 @@
       } else if (onboarding && onboarding.targetScore) {
         targetEl.textContent = `Target Score: ${onboarding.targetScore}`;
       } else {
-        targetEl.textContent = `${cfg.label} Aspirant`;
+        targetEl.textContent = `${cfg.displayLabel} Aspirant`;
       }
     }
 
@@ -1079,7 +1079,7 @@
     const countdownLabelEl = document.getElementById('countdownLabel');
     const countdownWrapEl = document.getElementById('countdownWrap');
     if (cfg.examDate) {
-      if (countdownLabelEl) countdownLabelEl.textContent = `${cfg.label} Countdown`;
+      if (countdownLabelEl) countdownLabelEl.textContent = `${cfg.examName} Countdown`;
       if (countdownWrapEl) countdownWrapEl.style.display = '';
       updateCountdown();
     } else {
