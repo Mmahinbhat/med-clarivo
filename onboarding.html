@@ -108,6 +108,24 @@
         <p class="text-xs text-ink-muted" id="step3Sub">Dream big — we'll help you get there.</p>
       </div>
       <div class="space-y-3" id="institutionOptions"></div>
+
+      <!-- Score input variant (for droppers) -->
+      <div class="space-y-5 hidden" id="scoreInputs">
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="prevScore">Previous NEET Score</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint text-[20px]">history</span>
+            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="prevScore" type="number" min="0" max="720" placeholder="e.g. 540"/>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-ink-muted ml-1" for="targetScore">Target NEET Score</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ink-faint text-[20px]">target</span>
+            <input class="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-all text-sm" id="targetScore" type="number" min="0" max="720" placeholder="e.g. 650"/>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- STEP 4: Study Hours -->
@@ -201,6 +219,34 @@
     el.closest('.step').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     answers[key] = value;
+
+    // Special case: NEET UG + Dropper level → switch step 3 to score inputs
+    if (key === 'level' && answers.exam === 'NEET UG') {
+      const isDropper = value.toLowerCase().includes('dropper');
+      toggleStep3Mode(isDropper);
+    }
+  }
+
+  function toggleStep3Mode(isScoreMode) {
+    const optionsBox = document.getElementById('institutionOptions');
+    const scoreBox   = document.getElementById('scoreInputs');
+    const title      = document.getElementById('step3Title');
+    const sub        = document.getElementById('step3Sub');
+
+    if (isScoreMode) {
+      optionsBox.classList.add('hidden');
+      scoreBox.classList.remove('hidden');
+      title.textContent = "Let's set your score goal";
+      sub.textContent   = "Tell us where you stood and where you're headed.";
+      answers.institution = 'score-mode'; // marks step as answerable
+    } else {
+      optionsBox.classList.remove('hidden');
+      scoreBox.classList.add('hidden');
+      const data = DATA[answers.exam];
+      title.textContent = data.step3Title;
+      sub.textContent   = data.step3Sub;
+      answers.institution = null;
+    }
   }
 
   function updateDots() {
@@ -222,7 +268,19 @@
   function nextStep() {
     const keys = ['exam', 'level', 'institution', 'hours'];
     const key  = keys[currentStep - 1];
-    if (!answers[key]) return showToast('Please select an option to continue.', 'error');
+
+    // Special validation for score-mode step 3
+    if (currentStep === 3 && answers.institution === 'score-mode') {
+      const prev   = document.getElementById('prevScore').value;
+      const target = document.getElementById('targetScore').value;
+      if (!prev || !target) {
+        return showToast('Please enter both scores to continue.', 'error');
+      }
+      answers.prevScore   = prev;
+      answers.targetScore = target;
+    } else if (!answers[key]) {
+      return showToast('Please select an option to continue.', 'error');
+    }
 
     if (currentStep === 4) {
       const user = JSON.parse(localStorage.getItem('mc_user') || '{}');
@@ -240,10 +298,11 @@
       // Step 2
       document.getElementById('step2Title').textContent = data.step2Title;
       renderOptions('levelOptions', data.levels, 'level');
-      // Step 3
-      document.getElementById('step3Title').textContent = data.step3Title;
-      document.getElementById('step3Sub').textContent   = data.step3Sub;
+      // Step 3 (default to options mode; will switch to score mode if dropper selected)
+      toggleStep3Mode(false);
       renderOptions('institutionOptions', data.institutions, 'institution');
+      document.getElementById('prevScore').value = '';
+      document.getElementById('targetScore').value = '';
       // Reset answers for steps 2-4 if user changed exam
       answers.level = null; answers.institution = null; answers.hours = null;
     }
