@@ -1,4 +1,4 @@
-˙require('dotenv').config();
+require('dotenv').config();
 const express    = require('express');
 const mongoose   = require('mongoose');
 const cors       = require('cors');
@@ -8,9 +8,8 @@ const rateLimit  = require('express-rate-limit');
 const passport   = require('./config/passport');
 
 const authRoutes       = require('./routes/auth');
-const studyRoutes = require('./routes/study');
+const studyRoutes      = require('./routes/study');
 const curriculumRoutes = require('./routes/curriculum');
-app.use('/api/curriculum', curriculumRoutes);
 
 const app  = express();
 const PORT = process.env.PORT || 5000;

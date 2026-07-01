@@ -14,7 +14,7 @@ router.get('/in-progress', protect, async (req, res) => {
   try {
     const progresses = await UserProgress.find({
       user: req.user._id,
-      status: 'in-progress',
+      status: 'in_progress',
     })
       .populate('chapter')
       .populate({
@@ -111,7 +111,7 @@ router.post('/sessions', protect, async (req, res) => {
     const progress = await UserProgress.findOneAndUpdate(
       { user: req.user._id, chapter: chapterId },
       {
-        $set: { status: 'in-progress', lastStudiedAt: new Date() },
+        $set: { status: 'in_progress', lastAccessedAt: new Date() },
       },
       { upsert: true, new: true }
     );

@@ -150,8 +150,7 @@
     // Initialize: Load in-progress chapters
     async function loadInProgressChapters() {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        const token = localStorage.getItem('mc_token');
         const res = await fetch(`${API_BASE}/study/in-progress`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -203,8 +202,7 @@
     // Load all subjects and chapters
     async function loadAllSubjects() {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        const token = localStorage.getItem('mc_token');
         const res = await fetch(`${API_BASE}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -213,7 +211,7 @@
         if (data.success) {
           const exam = data.user.onboarding?.exam;
           // Fetch subjects for this exam
-          const subjectsRes = await fetch(`${API_BASE}/curriculum/subjects?examGroup=NEET_UG`, {
+          const subjectsRes = await fetch(`${API_BASE}/curriculum/subjects`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const subjectsData = await subjectsRes.json();
@@ -235,7 +233,7 @@
           <p class="font-semibold text-sm mb-2">${subj.name}</p>
           <div class="space-y-1">
             ${(subj.chapters || []).slice(0, 3).map(ch => `
-              <button onclick="selectChapter('${ch._id}', '${ch.title}')"
+              <button onclick="selectChapter('${ch.id}', '${ch.title}')"
                 class="w-full text-left text-xs p-2 rounded bg-gray-50 hover:bg-teal-50 transition">
                 ${ch.title}
               </button>
@@ -293,8 +291,7 @@
       const durationMinutes = Math.round(elapsedSeconds / 60);
 
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        const token = localStorage.getItem('mc_token');
         const res = await fetch(`${API_BASE}/study/sessions`, {
           method: 'POST',
           headers: {
