@@ -1,4 +1,4 @@
-require('dotenv').config();
+˙require('dotenv').config();
 const express    = require('express');
 const mongoose   = require('mongoose');
 const cors       = require('cors');
@@ -8,6 +8,7 @@ const rateLimit  = require('express-rate-limit');
 const passport   = require('./config/passport');
 
 const authRoutes       = require('./routes/auth');
+const studyRoutes = require('./routes/study');
 const curriculumRoutes = require('./routes/curriculum');
 
 const app  = express();
@@ -44,7 +45,7 @@ app.use('/api/auth/login', rateLimit({
   max: 10,
   message: { success: false, message: 'Too many login attempts. Try again in 15 minutes.' },
 }));
-
+app.use('/api/study', studyRoutes);
 app.use(passport.initialize());
 
 // ── Routes ───────────────────────────────────────────────────
