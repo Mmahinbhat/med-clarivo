@@ -10,6 +10,7 @@ const passport   = require('./config/passport');
 const authRoutes       = require('./routes/auth');
 const studyRoutes = require('./routes/study');
 const curriculumRoutes = require('./routes/curriculum');
+app.use('/api/curriculum', curriculumRoutes);
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
