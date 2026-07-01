@@ -150,7 +150,8 @@
     // Initialize: Load in-progress chapters
     async function loadInProgressChapters() {
       try {
-        const token = localStorage.getItem('mc_token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         const res = await fetch(`${API_BASE}/study/in-progress`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -202,7 +203,8 @@
     // Load all subjects and chapters
     async function loadAllSubjects() {
       try {
-        const token = localStorage.getItem('mc_token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         const res = await fetch(`${API_BASE}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -291,7 +293,8 @@
       const durationMinutes = Math.round(elapsedSeconds / 60);
 
       try {
-        const token = localStorage.getItem('mc_token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         const res = await fetch(`${API_BASE}/study/sessions`, {
           method: 'POST',
           headers: {
