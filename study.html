@@ -82,7 +82,9 @@
 
         <!-- Browse All Subjects -->
         <div id="browseAllContainer" class="hidden">
-          <h3 class="text-sm font-bold text-gray-600 mb-3">All Subjects</h3>
+          <div id="subjectListHeader" class="mb-3">
+            <h3 class="text-sm font-bold text-gray-600">All Subjects</h3>
+          </div>
           <div id="subjectList" class="space-y-2"></div>
         </div>
 
@@ -217,7 +219,7 @@
           const subjectsData = await subjectsRes.json();
           
           if (subjectsData.success) {
-            renderSubjects(subjectsData.subjects);
+            renderSubjectList(subjectsData.subjects);
           }
         }
       } catch (err) {
@@ -225,25 +227,44 @@
       }
     }
 
-    // Render subjects for browsing
-    function renderSubjects(subjects) {
-      const list = document.getElementById('subjectList');
-      const html = subjects.map(subj => `
-        <div class="border border-gray-200 rounded-lg p-3">
-          <p class="font-semibold text-sm mb-2">${subj.name}</p>
-          <div class="space-y-1">
-            ${(subj.chapters || []).slice(0, 3).map(ch => `
-              <button onclick="selectChapter('${ch.id}', '${ch.title}')"
-                class="w-full text-left text-xs p-2 rounded bg-gray-50 hover:bg-teal-50 transition">
-                ${ch.title}
-              </button>
-            `).join('')}
-            ${subj.chapters?.length > 3 ? `<p class="text-xs text-gray-500 p-2">+${subj.chapters.length - 3} more</p>` : ''}
-          </div>
-        </div>
-      `).join('');
+    // Subjects fetched once and cached, so drilling in/out doesn't need a re-fetch
+    let cachedSubjects = [];
 
-      list.innerHTML = html;
+    // Step 1: just the subject list (e.g. Physics, Chemistry, Biology) — nothing else
+    function renderSubjectList(subjects) {
+      cachedSubjects = subjects;
+      document.getElementById('subjectListHeader').innerHTML =
+        '<h3 class="text-sm font-bold text-gray-600">All Subjects</h3>';
+
+      const list = document.getElementById('subjectList');
+      list.innerHTML = subjects.map(subj => `
+        <button onclick="showSubjectChapters('${subj.id}')"
+          class="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition flex items-center justify-between">
+          <span class="font-semibold text-sm">${subj.name}</span>
+          <span class="text-xs text-gray-400">${subj.chapterCount} chapters &rsaquo;</span>
+        </button>
+      `).join('');
+    }
+
+    // Step 2: drill into one subject — its full chapter list, with a way back
+    function showSubjectChapters(subjectId) {
+      const subj = cachedSubjects.find(s => s.id === subjectId);
+      if (!subj) return;
+
+      document.getElementById('subjectListHeader').innerHTML = `
+        <button onclick="renderSubjectList(cachedSubjects)" class="text-xs font-semibold text-teal-700 hover:underline mb-2 flex items-center gap-1">
+          &larr; All Subjects
+        </button>
+        <h3 class="text-sm font-bold text-gray-600">${subj.name}</h3>`;
+
+      const list = document.getElementById('subjectList');
+      list.innerHTML = (subj.chapters || []).map(ch => `
+        <button onclick="selectChapter('${ch.id}', '${ch.title}')"
+          class="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition">
+          <p class="font-semibold text-sm">${ch.title}</p>
+          <p class="text-xs text-gray-400">${ch.status === 'completed' ? 'Completed' : ch.status === 'in_progress' ? `${ch.percentComplete}% complete` : 'Not started'}</p>
+        </button>
+      `).join('') || '<p class="text-xs text-gray-500">No chapters yet.</p>';
     }
 
     // Select a chapter and start stopwatch
