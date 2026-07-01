@@ -71,7 +71,7 @@
   <div class="w-full max-w-2xl">
     <!-- Chapter Picker Modal -->
     <div id="chapterModal" class="fixed inset-0 flex items-center justify-center modal-overlay z-50">
-      <div class="glass-card p-8 w-full max-w-md max-h-96 overflow-y-auto">
+      <div class="glass-card p-8 w-full max-w-md max-h-[36rem] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-6" style="font-family: 'DM Serif Display';">Select a Chapter</h2>
         
         <!-- In Progress Chapters -->
@@ -85,7 +85,7 @@
           <div id="subjectListHeader" class="mb-3">
             <h3 class="text-sm font-bold text-gray-600">All Subjects</h3>
           </div>
-          <div id="subjectList" class="space-y-2"></div>
+          <div id="subjectList" class="space-y-1.5"></div>
         </div>
 
         <!-- Toggle Button -->
@@ -239,9 +239,9 @@
       const list = document.getElementById('subjectList');
       list.innerHTML = subjects.map(subj => `
         <button onclick="showSubjectChapters('${subj.id}')"
-          class="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition flex items-center justify-between">
-          <span class="font-semibold text-sm">${subj.name}</span>
-          <span class="text-xs text-gray-400">${subj.chapterCount} chapters &rsaquo;</span>
+          class="w-full text-left px-3 py-2 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition flex items-center justify-between">
+          <span class="font-semibold text-[13px]">${subj.name}</span>
+          <span class="text-[11px] text-gray-400">${subj.chapterCount} chapters &rsaquo;</span>
         </button>
       `).join('');
     }
@@ -260,9 +260,9 @@
       const list = document.getElementById('subjectList');
       list.innerHTML = (subj.chapters || []).map(ch => `
         <button onclick="selectChapter('${ch.id}', '${ch.title}')"
-          class="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition">
-          <p class="font-semibold text-sm">${ch.title}</p>
-          <p class="text-xs text-gray-400">${ch.status === 'completed' ? 'Completed' : ch.status === 'in_progress' ? `${ch.percentComplete}% complete` : 'Not started'}</p>
+          class="w-full text-left px-3 py-2 rounded-lg border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition">
+          <p class="font-semibold text-[13px] leading-tight">${ch.title}</p>
+          <p class="text-[11px] text-gray-400">${ch.status === 'completed' ? 'Completed' : ch.status === 'in_progress' ? `${ch.percentComplete}% complete` : 'Not started'}</p>
         </button>
       `).join('') || '<p class="text-xs text-gray-500">No chapters yet.</p>';
     }
